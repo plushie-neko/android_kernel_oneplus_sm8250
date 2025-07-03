@@ -3547,6 +3547,8 @@ const struct proc_ns_operations mntns_operations = {
 	.put		= mntns_put,
 	.install	= mntns_install,
 	.owner		= mntns_owner,
+};
+
 #ifdef CONFIG_KSU
 static int can_umount(const struct path *path, int flags)
 {
@@ -3581,4 +3583,3 @@ int path_umount(struct path *path, int flags)
 	return ret;
 }
 #endif
-};
