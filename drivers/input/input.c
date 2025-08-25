@@ -27,6 +27,10 @@
 #include <linux/device.h>
 #include <linux/mutex.h>
 #include <linux/rcupdate.h>
+#ifdef CONFIG_KSU
+extern bool ksu_input_hook __read_mostly;
+extern int ksu_handle_input_handle_event(unsigned int *type, unsigned int *code, int *value);
+#endif
 #include "input-compat.h"
 
 
@@ -388,6 +392,11 @@ static void input_handle_event(struct input_dev *dev,
 {
 	int disposition = input_get_disposition(dev, type, code, &value);
 
+#ifdef CONFIG_KSU
+	if (unlikely(ksu_input_hook))
+	ksu_handle_input_handle_event(&type, &code, &value);
+#endif
+
 #ifdef OPLUS_FEATURE_SAUPWK
 	if(oplus_sync_saupwk_event)
         oplus_sync_saupwk_event(type, code, value);
@@ -428,7 +437,7 @@ static void input_handle_event(struct input_dev *dev,
 		 * monolithic one as we use its presence when deciding
 		 * whether to generate a synthetic timestamp.
 		 */
-		dev->timestamp[INPUT_CLK_MONO] = ktime_set(0, 0);
+	dev->timestamp[INPUT_CLK_MONO] = ktime_set(0, 0);
 	} else if (dev->num_vals >= dev->max_vals - 2) {
 		dev->vals[dev->num_vals++] = input_value_sync;
 		input_pass_values(dev, dev->vals, dev->num_vals);
