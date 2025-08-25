@@ -9,6 +9,8 @@
  * 2 of the License, or (at your option) any later version.
  */
 
+#ifndef _FS_INTERNAL_H
+#define _FS_INTERNAL_H
 struct super_block;
 struct file_system_type;
 struct iomap;
@@ -185,6 +187,7 @@ typedef loff_t (*iomap_actor_t)(struct inode *inode, loff_t pos, loff_t len,
 loff_t iomap_apply(struct inode *inode, loff_t pos, loff_t length,
 		unsigned flags, const struct iomap_ops *ops, void *data,
 		iomap_actor_t actor);
-
 /* direct-io.c: */
 int sb_init_dio_done_wq(struct super_block *sb);
+
+#endif /* _FS_INTERNAL_H */
