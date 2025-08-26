@@ -2329,7 +2329,7 @@ static int __btf_new_fd(struct btf *btf)
 	return anon_inode_getfd("btf", &btf_fops, btf, O_RDONLY | O_CLOEXEC);
 }
 
-int btf_new_fd(const union bpf_attr *attr)
+int btf_new_fd(union bpf_attr *attr)
 {
 	struct btf *btf;
 	int ret;
@@ -2383,7 +2383,7 @@ struct btf *btf_get_by_fd(int fd)
 }
 
 int btf_get_info_by_fd(const struct btf *btf,
-		       const union bpf_attr *attr,
+		       union bpf_attr *attr,
 		       union bpf_attr __user *uattr)
 {
 	struct bpf_btf_info __user *uinfo;

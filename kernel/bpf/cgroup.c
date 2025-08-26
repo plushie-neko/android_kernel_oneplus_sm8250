@@ -403,7 +403,7 @@ cleanup:
 }
 
 /* Must be called with cgroup_mutex held to avoid races. */
-int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+int __cgroup_bpf_query(struct cgroup *cgrp, union bpf_attr *attr,
 		       union bpf_attr __user *uattr)
 {
 	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
@@ -486,7 +486,7 @@ int cgroup_bpf_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype)
 	return ret;
 }
 
-int cgroup_bpf_prog_query(const union bpf_attr *attr,
+int cgroup_bpf_prog_query(union bpf_attr *attr,
 			  union bpf_attr __user *uattr)
 {
 	struct cgroup *cgrp;

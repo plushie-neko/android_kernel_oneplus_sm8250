@@ -71,7 +71,7 @@ int __cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
 			enum bpf_attach_type type, u32 flags);
 int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
 			enum bpf_attach_type type, u32 flags);
-int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+int __cgroup_bpf_query(struct cgroup *cgrp, union bpf_attr *attr,
 		       union bpf_attr __user *uattr);
 
 /* Wrapper for __cgroup_bpf_*() protected by cgroup_mutex */
@@ -79,7 +79,7 @@ int cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
 		      enum bpf_attach_type type, u32 flags);
 int cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
 		      enum bpf_attach_type type, u32 flags);
-int cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+int cgroup_bpf_query(struct cgroup *cgrp, union bpf_attr *attr,
 		     union bpf_attr __user *uattr);
 
 int __cgroup_bpf_run_filter_skb(struct sock *sk,
@@ -243,7 +243,7 @@ int cgroup_bpf_prog_attach(const union bpf_attr *attr,
 			   enum bpf_prog_type ptype, struct bpf_prog *prog);
 int cgroup_bpf_prog_detach(const union bpf_attr *attr,
 			   enum bpf_prog_type ptype);
-int cgroup_bpf_prog_query(const union bpf_attr *attr,
+int cgroup_bpf_prog_query(union bpf_attr *attr,
 			  union bpf_attr __user *uattr);
 #else
 

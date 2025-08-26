@@ -195,7 +195,7 @@ out:
 }
 
 static int enable_verity(struct file *filp,
-			 const struct fsverity_enable_arg *arg)
+			 struct fsverity_enable_arg *arg)
 {
 	struct inode *inode = file_inode(filp);
 	const struct fsverity_operations *vops = inode->i_sb->s_vop;

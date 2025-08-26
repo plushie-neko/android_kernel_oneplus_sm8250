@@ -6485,7 +6485,7 @@ int cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
 	mutex_unlock(&cgroup_mutex);
 	return ret;
 }
-int cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+int cgroup_bpf_query(struct cgroup *cgrp, union bpf_attr *attr,
 		     union bpf_attr __user *uattr)
 {
 	int ret;

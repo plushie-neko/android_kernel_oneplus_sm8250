@@ -1500,7 +1500,7 @@ static int bpf_obj_pin(const union bpf_attr *attr)
 	if (CHECK_ATTR(BPF_OBJ) || attr->file_flags != 0)
 		return -EINVAL;
 
-	return bpf_obj_pin_user(attr->bpf_fd, u64_to_user_ptr(attr->pathname));
+	return bpf_obj_pin_user(attr->bpf_fd, u64_to_user_ptr((u64)attr->pathname)); 
 }
 
 static int bpf_obj_get(const union bpf_attr *attr)
@@ -1509,7 +1509,7 @@ static int bpf_obj_get(const union bpf_attr *attr)
 	    attr->file_flags & ~BPF_OBJ_FLAG_MASK)
 		return -EINVAL;
 
-	return bpf_obj_get_user(u64_to_user_ptr(attr->pathname),
+	return bpf_obj_get_user(u64_to_user_ptr((u64)attr->pathname), 
 				attr->file_flags);
 }
 
@@ -1546,7 +1546,7 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
 	char tp_name[128];
 	int tp_fd, err;
 
-	if (strncpy_from_user(tp_name, u64_to_user_ptr(attr->raw_tracepoint.name),
+	if (strncpy_from_user(tp_name, u64_to_user_ptr((u64)attr->raw_tracepoint.name),
 			      sizeof(tp_name) - 1) < 0)
 		return -EFAULT;
 	tp_name[sizeof(tp_name) - 1] = 0;
@@ -1740,7 +1740,7 @@ static int bpf_prog_detach(const union bpf_attr *attr)
 
 #define BPF_PROG_QUERY_LAST_FIELD query.prog_cnt
 
-static int bpf_prog_query(const union bpf_attr *attr,
+static int bpf_prog_query(union bpf_attr *attr,
 			  union bpf_attr __user *uattr)
 {
 	if (!capable(CAP_NET_ADMIN))
@@ -1778,7 +1778,7 @@ static int bpf_prog_query(const union bpf_attr *attr,
 
 #define BPF_PROG_TEST_RUN_LAST_FIELD test.duration
 
-static int bpf_prog_test_run(const union bpf_attr *attr,
+static int bpf_prog_test_run(union bpf_attr *attr,
 			     union bpf_attr __user *uattr)
 {
 	struct bpf_prog *prog;
@@ -1965,7 +1965,7 @@ static int bpf_prog_get_info_by_fd(struct file *file,
 				   const union bpf_attr *attr,
 				   union bpf_attr __user *uattr)
 {
-	struct bpf_prog_info __user *uinfo = u64_to_user_ptr(attr->info.info);
+	struct bpf_prog_info __user *uinfo = u64_to_user_ptr((u64)attr->info.info);
 	struct bpf_prog_info info;
 	u32 info_len = attr->info.info_len;
 	char __user *uinsns;
@@ -2145,7 +2145,7 @@ static int bpf_map_get_info_by_fd(struct file *file,
 				  const union bpf_attr *attr,
 				  union bpf_attr __user *uattr)
 {
-	struct bpf_map_info __user *uinfo = u64_to_user_ptr(attr->info.info);
+	struct bpf_map_info __user *uinfo = u64_to_user_ptr((u64)attr->info.info);
 	struct bpf_map_info info;
 	u32 info_len = attr->info.info_len;
 	int err;
@@ -2185,10 +2185,10 @@ static int bpf_map_get_info_by_fd(struct file *file,
 
 static int bpf_btf_get_info_by_fd(struct file *file,
 				  struct btf *btf,
-				  const union bpf_attr *attr,
+				  union bpf_attr *attr,
 				  union bpf_attr __user *uattr)
 {
-	struct bpf_btf_info __user *uinfo = u64_to_user_ptr(attr->info.info);
+	struct bpf_btf_info __user *uinfo = u64_to_user_ptr((u64)attr->info.info);                                                                                            
 	u32 info_len = attr->info.info_len;
 	int err;
 
@@ -2201,7 +2201,7 @@ static int bpf_btf_get_info_by_fd(struct file *file,
 
 #define BPF_OBJ_GET_INFO_BY_FD_LAST_FIELD info.info
 
-static int bpf_obj_get_info_by_fd(const union bpf_attr *attr,
+static int bpf_obj_get_info_by_fd(union bpf_attr *attr,
 				  union bpf_attr __user *uattr)
 {
 	int ufd = attr->info.bpf_fd;
@@ -2232,7 +2232,7 @@ static int bpf_obj_get_info_by_fd(const union bpf_attr *attr,
 
 #define BPF_BTF_LOAD_LAST_FIELD btf_log_level
 
-static int bpf_btf_load(const union bpf_attr *attr)
+static int bpf_btf_load(union bpf_attr *attr)
 {
 	if (CHECK_ATTR(BPF_BTF_LOAD))
 		return -EINVAL;
@@ -2262,7 +2262,7 @@ static int bpf_task_fd_query_copy(const union bpf_attr *attr,
 				    const char *buf, u64 probe_offset,
 				    u64 probe_addr)
 {
-	char __user *ubuf = u64_to_user_ptr(attr->task_fd_query.buf);
+	char __user *ubuf = u64_to_user_ptr((u64)attr->task_fd_query.buf);
 	u32 len = buf ? strlen(buf) : 0, input_len;
 	int err = 0;
 

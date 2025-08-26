@@ -464,7 +464,7 @@ void wbt_set_min_lat(struct request_queue *q, u64 val)
 
 static bool close_io(struct rq_wb *rwb)
 {
-	const unsigned long now = jiffies;
+	unsigned long now = jiffies;
 
 	return time_before(now, rwb->last_issue + HZ / 10) ||
 		time_before(now, rwb->last_comp + HZ / 10);

@@ -1644,6 +1644,7 @@ struct rtable *rt_dst_alloc(struct net_device *dev,
 		rt->rt_mtu_locked = 0;
 		rt->rt_gateway = 0;
 		rt->rt_uses_gateway = 0;
+		rt->dst.expires = 0;
 		INIT_LIST_HEAD(&rt->rt_uncached);
 
 		rt->dst.output = ip_output;
