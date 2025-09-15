@@ -11253,6 +11253,8 @@ void oplus_get_usbtemp_volt(struct oplus_chg_chip *chip)
 	struct smb_charger *chg = NULL;
 	static int usbtemp_volt_l_pre = USBTEMP_DEFAULT_VOLT_VALUE_MV;
 	static int usbtemp_volt_r_pre = USBTEMP_DEFAULT_VOLT_VALUE_MV;
+	static bool usbtemp_v_chan_error_printed = false;
+	static bool usbtemp_sup_v_chan_error_printed = false;
 
     if (!chip) {
 		printk(KERN_ERR "[OPLUS_CHG][%s]: smb5_chg not ready!\n", __func__);
@@ -11261,14 +11263,20 @@ void oplus_get_usbtemp_volt(struct oplus_chg_chip *chip)
 	chg = &chip->pmic_spmi.smb5_chip->chg;
 
 	if (IS_ERR_OR_NULL(chg->iio.usbtemp_v_chan)) {
-		chg_err("chg->iio.usbtemp_v_chan is NULL!\n");
+		if (!usbtemp_v_chan_error_printed) {
+			chg_err("chg->iio.usbtemp_v_chan is NULL!\n");
+			usbtemp_v_chan_error_printed = true;
+		}
 		chip->usbtemp_volt_l = usbtemp_volt_l_pre;
 		goto usbtemp_next;
 	}
 
-	rc = iio_read_channel_processed(chg->iio.usbtemp_v_chan, &usbtemp_volt);
+	rec = iio_read_channel_processed(chg->iio.usbtemp_v_chan, &usbtemp_volt);
 	if (rc < 0) {
-		chg_err("iio_read_channel_processed usbtemp_v_chan get error, rc=%d\n", rc);
+		if (!usbtemp_v_chan_error_printed) {
+			chg_err("iio_read_channel_processed usbtemp_v_chan get error, rc=%d\n", rc);
+			usbtemp_v_chan_error_printed = true;
+		}
 		chip->usbtemp_volt_l = usbtemp_volt_l_pre;
 		goto usbtemp_next;
 	}
@@ -11285,14 +11293,20 @@ void oplus_get_usbtemp_volt(struct oplus_chg_chip *chip)
 usbtemp_next:
 	usbtemp_volt = 0;
 	if (IS_ERR_OR_NULL(chg->iio.usbtemp_sup_v_chan)) {
-		chg_err("chg->iio.usbtemp_sup_v_chan is NULL!\n");
+		if (!usbtemp_sup_v_chan_error_printed) {
+			chg_err("chg->iio.usbtemp_sup_v_chan is NULL!\n");
+			usbtemp_sup_v_chan_error_printed = true;
+		}
 		chip->usbtemp_volt_r = usbtemp_volt_r_pre;
 		return;
 	}
 
-	rc = iio_read_channel_processed(chg->iio.usbtemp_sup_v_chan, &usbtemp_volt);
+	rec = iio_read_channel_processed(chg->iio.usbtemp_sup_v_chan, &usbtemp_volt);
 	if (rc < 0) {
-		chg_err("iio_read_channel_processed usbtemp_sup_v_chan get error, rc=%d\n", rc);
+		if (!usbtemp_sup_v_chan_error_printed) {
+			chg_err("iio_read_channel_processed usbtemp_sup_v_chan get error, rc=%d\n", rc);
+			usbtemp_sup_v_chan_error_printed = true;
+		}
 		chip->usbtemp_volt_r = usbtemp_volt_r_pre;
 		return;
 	}
@@ -11309,6 +11323,7 @@ usbtemp_next:
 
 	//chg_err("usbtemp_volt_l:%d, usbtemp_volt_r:%d\n",chip->usbtemp_volt_l, chip->usbtemp_volt_r);
 }
+
 
 static int get_btb_temp(struct iio_channel *temp_chan)
 {
