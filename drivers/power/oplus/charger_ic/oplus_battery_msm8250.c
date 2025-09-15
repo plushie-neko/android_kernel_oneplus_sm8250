@@ -11271,7 +11271,7 @@ void oplus_get_usbtemp_volt(struct oplus_chg_chip *chip)
 		goto usbtemp_next;
 	}
 
-	rec = iio_read_channel_processed(chg->iio.usbtemp_v_chan, &usbtemp_volt);
+	rc = iio_read_channel_processed(chg->iio.usbtemp_v_chan, &usbtemp_volt);
 	if (rc < 0) {
 		if (!usbtemp_v_chan_error_printed) {
 			chg_err("iio_read_channel_processed usbtemp_v_chan get error, rc=%d\n", rc);
@@ -11301,7 +11301,7 @@ usbtemp_next:
 		return;
 	}
 
-	rec = iio_read_channel_processed(chg->iio.usbtemp_sup_v_chan, &usbtemp_volt);
+	rc = iio_read_channel_processed(chg->iio.usbtemp_sup_v_chan, &usbtemp_volt);
 	if (rc < 0) {
 		if (!usbtemp_sup_v_chan_error_printed) {
 			chg_err("iio_read_channel_processed usbtemp_sup_v_chan get error, rc=%d\n", rc);
