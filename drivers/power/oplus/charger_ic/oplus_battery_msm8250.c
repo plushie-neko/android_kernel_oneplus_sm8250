@@ -11261,14 +11261,14 @@ void oplus_get_usbtemp_volt(struct oplus_chg_chip *chip)
 	chg = &chip->pmic_spmi.smb5_chip->chg;
 
 	if (IS_ERR_OR_NULL(chg->iio.usbtemp_v_chan)) {
-		printk(KERN_ERR "[OPLUS_CHG][%s]: chg->iio.usbtemp_v_chan  is  NULL !\n", __func__);
+		chg_err("chg->iio.usbtemp_v_chan is NULL!\n");
 		chip->usbtemp_volt_l = usbtemp_volt_l_pre;
 		goto usbtemp_next;
 	}
 
 	rc = iio_read_channel_processed(chg->iio.usbtemp_v_chan, &usbtemp_volt);
 	if (rc < 0) {
-		chg_err("[OPLUS_CHG][%s]: iio_read_channel_processed  get error\n", __func__);
+		chg_err("iio_read_channel_processed usbtemp_v_chan get error, rc=%d\n", rc);
 		chip->usbtemp_volt_l = usbtemp_volt_l_pre;
 		goto usbtemp_next;
 	}
@@ -11285,14 +11285,14 @@ void oplus_get_usbtemp_volt(struct oplus_chg_chip *chip)
 usbtemp_next:
 	usbtemp_volt = 0;
 	if (IS_ERR_OR_NULL(chg->iio.usbtemp_sup_v_chan)) {
-		printk(KERN_ERR "[OPLUS_CHG][%s]: chg->iio.usbtemp_sup_v_chan  is  NULL !\n", __func__);
+		chg_err("chg->iio.usbtemp_sup_v_chan is NULL!\n");
 		chip->usbtemp_volt_r = usbtemp_volt_r_pre;
 		return;
 	}
 
 	rc = iio_read_channel_processed(chg->iio.usbtemp_sup_v_chan, &usbtemp_volt);
 	if (rc < 0) {
-		chg_err("[OPLUS_CHG][%s]: iio_read_channel_processed  get error\n", __func__);
+		chg_err("iio_read_channel_processed usbtemp_sup_v_chan get error, rc=%d\n", rc);
 		chip->usbtemp_volt_r = usbtemp_volt_r_pre;
 		return;
 	}
